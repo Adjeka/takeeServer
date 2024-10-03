@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using takee.Contracts.Favourites;
 using takee.Core.Interfaces.Services;
 using takee.Core.Models;
@@ -50,20 +51,60 @@ namespace takee.Controllers
         }
 
         [HttpPost]
+        [Route("byUser")]
+        public async Task<ActionResult<List<FavouritesResponse>>> GetFavouriteByUserId([FromBody] IdRequest request)
+        {
+            var favourites = await _favouriteService.GetFavouriteByUserId(request.Id);
+
+            var response = favourites.Select(r => new FavouritesResponse(
+                r.Id,
+                r.User,
+                r.Animal));
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("byUserAndAnimal")]
+        public async Task<ActionResult<FavouritesResponse>> GetFavouriteByUserIdAndAnimalId([FromBody] FavouritesRequest request)
+        {
+            var favourite = await _favouriteService.GetFavouriteByUserIdAndAnimalId(request.UserId, request.AnimalId);
+
+            if (favourite == null) 
+            {
+                return Ok();
+            }
+            else
+            {
+                var response = new FavouritesResponse(
+                    favourite.Id,
+                    favourite.User,
+                    favourite.Animal);
+
+                return Ok(response);
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult> CreateFavourite([FromBody] FavouritesRequest request)
         {
-            var user = await _usersService.GetUserById(request.UserId);
-            var animal = await _animalsService.GetAnimalById(request.AnimalId);
+            var existingFavourite = await _favouriteService.GetFavouriteByUserIdAndAnimalId(request.UserId, request.AnimalId);
 
-            var favourite = Favourite.Create(
-                Guid.NewGuid(), 
-                user, 
-                animal);
+            if (existingFavourite == null) 
+            {
+                var user = await _usersService.GetUserById(request.UserId);
+                var animal = await _animalsService.GetAnimalById(request.AnimalId);
 
-            if (favourite.IsFailure)
-                return BadRequest(favourite.Error);
+                var favourite = Favourite.Create(
+                    Guid.NewGuid(),
+                    user,
+                    animal);
 
-            await _favouriteService.CreateFavourite(favourite.Value);
+                if (favourite.IsFailure)
+                    return BadRequest(favourite.Error);
+
+                await _favouriteService.CreateFavourite(favourite.Value);
+            }
 
             return Ok();
         }
@@ -82,6 +123,11 @@ namespace takee.Controllers
             await _favouriteService.DeleteFavourite(id);
 
             return Ok();
+        }
+
+        public class IdRequest
+        {
+            public Guid Id { get; set; }
         }
     }
 }

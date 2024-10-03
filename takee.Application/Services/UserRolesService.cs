@@ -23,6 +23,11 @@ namespace takee.Application.Services
             return await _userRolesRepository.GetById(id);
         }
 
+        public async Task<UserRole> GetUserRoleByName(string name)
+        {
+            return await _userRolesRepository.GetByName(name);
+        }
+
         public async Task CreateUserRole(UserRole userRole)
         {
             await _userRolesRepository.Create(userRole);

@@ -1,10 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
+using takee.Application.Auth;
 using takee.Application.Services;
 using takee.Core.Interfaces.Repositories;
 using takee.Core.Interfaces.Services;
 using takee.DataAccess;
 using takee.DataAccess.Mapping;
 using takee.DataAccess.Repositories;
+using takee.Extension;
+using takee.Infrastructure.Authentication;
 
 namespace takee
 {
@@ -14,9 +19,15 @@ namespace takee
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddApiAuthentication(builder.Configuration);
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+            //builder.Services.Configure<AuthorizationOptions>(builder.Configuration.GetSection(nameof(AuthorizationOptions)));
+
             builder.Services.AddAutoMapper(typeof(DataBaseMappings));
 
             builder.Services.AddDbContext<TakeeDbContext>(
@@ -43,6 +54,9 @@ namespace takee
             builder.Services.AddScoped<IUserRolesRepository, UserRolesRepository>();
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
+            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -52,6 +66,15 @@ namespace takee
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+                HttpOnly = HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.Always
+            });
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

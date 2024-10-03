@@ -5,7 +5,7 @@ namespace takee.Core.Models
 {
     public class PhoneNumber : ValueObject
     {
-        private const string phoneRegex = @"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$";
+        private const string phoneRegex = @"^(\+7|7|8)?[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$";
 
         public string Number { get; }
 
@@ -14,16 +14,16 @@ namespace takee.Core.Models
             Number = number;
         }
 
-        public static Result<PhoneNumber> Create(string input)
+        public static PhoneNumber Create(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
-                return Result.Failure<PhoneNumber>("Phone number can not be empty");
+                throw new ArgumentException("Phone number can not be empty");
 
             if (Regex.IsMatch(input, phoneRegex) == false)
-                return Result.Failure<PhoneNumber>("Incorrectly entered phone number");
+                throw new ArgumentException("Incorrectly entered phone number");
 
             var phoneNumber = new PhoneNumber(input);
-            return Result.Success(phoneNumber);
+            return phoneNumber;
         }
 
         protected override IEnumerable<IComparable> GetEqualityComponents()

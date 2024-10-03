@@ -25,6 +25,7 @@
     <ProjectReference Include="..\takee.Application\takee.Application.csproj" />
     <ProjectReference Include="..\takee.Core\takee.Core.csproj" />
     <ProjectReference Include="..\takee.DataAccess\takee.DataAccess.csproj" />
+    <ProjectReference Include="..\takee.Infrastructure\takee.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

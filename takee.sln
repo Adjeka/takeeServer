@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "takee.Core", "takee.Core\ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "takee.DataAccess", "takee.DataAccess\takee.DataAccess.csproj", "{D0C72BF8-83CE-480C-8216-5C54CBCEEFED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "takee.Application", "takee.Application\takee.Application.csproj", "{62EF708F-9284-4087-A7D5-021B024C689F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "takee.Application", "takee.Application\takee.Application.csproj", "{62EF708F-9284-4087-A7D5-021B024C689F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "takee.Infrastructure", "takee.Infrastructure\takee.Infrastructure.csproj", "{7FDF0726-9BC2-4C5B-9FC1-8F1539627538}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{62EF708F-9284-4087-A7D5-021B024C689F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62EF708F-9284-4087-A7D5-021B024C689F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62EF708F-9284-4087-A7D5-021B024C689F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FDF0726-9BC2-4C5B-9FC1-8F1539627538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FDF0726-9BC2-4C5B-9FC1-8F1539627538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FDF0726-9BC2-4C5B-9FC1-8F1539627538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FDF0726-9BC2-4C5B-9FC1-8F1539627538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

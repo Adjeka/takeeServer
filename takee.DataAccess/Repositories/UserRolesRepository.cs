@@ -35,6 +35,15 @@ namespace takee.DataAccess.Repositories
             return _mapper.Map<UserRole>(userRoleEntity);
         }
 
+        public async Task<UserRole> GetByName(string name)
+        {
+            var userRoleEntity = await _context.UserRoles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ur => ur.Name == name) ?? throw new Exception();
+
+            return _mapper.Map<UserRole>(userRoleEntity);
+        }
+
         public async Task Create(UserRole userRole)
         {
             var userRoleEntity = new UserRoleEntity()

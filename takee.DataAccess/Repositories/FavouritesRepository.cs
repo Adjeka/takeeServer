@@ -35,7 +35,34 @@ namespace takee.DataAccess.Repositories
                 .Where(f => f.Id == id)
                 .Include(f => f.User)
                 .Include(f => f.Animal)
-                .FirstOrDefaultAsync() ?? throw new Exception();
+                .FirstOrDefaultAsync() ?? null;
+
+            return _mapper.Map<Favourite>(favouriteEntity);
+        }
+
+        public async Task<List<Favourite>> GetByUserId(Guid id)
+        {
+            var favouriteEntity = await _context.Favourites
+                .AsNoTracking()
+                .Where(f => f.User.Id == id)
+                .Include(f => f.User)
+                .Include(f => f.Animal).ThenInclude(a => a.Breed)
+                .Include(a => a.Animal).ThenInclude(a => a.TypeOfAnimals)
+                .Include(a => a.Animal).ThenInclude(a => a.Curator)
+                .ToListAsync();
+
+            return _mapper.Map<List<Favourite>>(favouriteEntity);
+        }
+
+        public async Task<Favourite> GetByUserIdAndAnimalId(Guid userId, Guid animalId)
+        {
+            var favouriteEntity = await _context.Favourites
+                .AsNoTracking()
+                .Where(f => f.User.Id == userId)
+                .Where(f => f.Animal.Id == animalId)
+                .Include(f => f.User)
+                .Include(f => f.Animal)
+                .FirstOrDefaultAsync() ?? null;
 
             return _mapper.Map<Favourite>(favouriteEntity);
         }

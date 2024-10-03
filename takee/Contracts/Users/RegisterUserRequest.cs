@@ -7,7 +7,6 @@
         DateTime DateOfBirth,
         string Email,
         string PhoneNumber,
-        Guid UserRoleId,
         string Login,
         string Password);
 }

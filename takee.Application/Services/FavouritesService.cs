@@ -23,6 +23,16 @@ namespace takee.Application.Services
             return await _favouritesRepository.GetById(id);
         }
 
+        public async Task<List<Favourite>> GetFavouriteByUserId(Guid id)
+        {
+            return await _favouritesRepository.GetByUserId(id);
+        }
+
+        public async Task<Favourite> GetFavouriteByUserIdAndAnimalId(Guid userId, Guid animalId)
+        {
+            return await _favouritesRepository.GetByUserIdAndAnimalId(userId, animalId);
+        }
+
         public async Task CreateFavourite(Favourite favourite)
         {
             await _favouritesRepository.Create(favourite);

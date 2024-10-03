@@ -53,8 +53,8 @@ namespace takee.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateCurator([FromBody] CuratorsRequest request)
         {
-            var email = Email.Create(request.Email).Value;
-            var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
+            var email = Email.Create(request.Email);
+            var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
 
             var curator = Curator.Create(
                 Guid.NewGuid(),
@@ -75,8 +75,8 @@ namespace takee.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult> UpdateCurator(Guid id, [FromBody] CuratorsRequest request)
         {
-            var email = Email.Create(request.Email).Value;
-            var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
+            var email = Email.Create(request.Email);
+            var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
 
             await _curatorsService.UpdateCurator(
                 id,

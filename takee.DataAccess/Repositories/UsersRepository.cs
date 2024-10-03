@@ -38,6 +38,17 @@ namespace takee.DataAccess.Repositories
             return _mapper.Map<User>(userEntity);
         }
 
+        public async Task<User> GetByLogin(string login)
+        {
+            var userEntity = await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Login == login)
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync() ?? throw new Exception();
+
+            return _mapper.Map<User>(userEntity);
+        }
+
         public async Task Create(User user)
         {
             var foundUser = await _context.Users

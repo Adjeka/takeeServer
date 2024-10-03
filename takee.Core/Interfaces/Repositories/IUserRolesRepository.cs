@@ -8,6 +8,7 @@ namespace takee.Core.Interfaces.Repositories
         Task Delete(Guid id);
         Task<List<UserRole>> Get();
         Task<UserRole> GetById(Guid id);
+        Task<UserRole> GetByName(string name);
         Task Update(Guid id, string name);
     }
 }

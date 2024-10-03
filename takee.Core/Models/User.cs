@@ -7,6 +7,7 @@ namespace takee.Core.Models
         public const int MAX_SURNAME_LENGTH = 50;
         public const int MAX_NAME_LENGTH = 50;
         public const int MAX_PATRONYMIC_LENGTH = 50;
+        public const int MAX_LOGIN_LENGTH = 15;
 
         private User(
             Guid id, 
@@ -43,7 +44,7 @@ namespace takee.Core.Models
         public string Login { get; }
         public string Password { get; }
 
-        public static Result<User> Create(Guid id,
+        public static User Create(Guid id,
             string surname,
             string name,
             string patronymic,
@@ -55,17 +56,23 @@ namespace takee.Core.Models
             string password)
         {
             if (string.IsNullOrEmpty(surname) || surname.Length > MAX_SURNAME_LENGTH)
-                return Result.Failure<User>($"Surname can not be empty or longer then 50 symbols");
+                throw new ArgumentException($"Surname can not be empty or longer then 50 symbols");
 
             if (string.IsNullOrEmpty(name) || name.Length > MAX_NAME_LENGTH)
-                return Result.Failure<User>($"Name can not be empty or longer then 50 symbols");
+                throw new ArgumentException($"Name can not be empty or longer then 50 symbols");
 
-            if (string.IsNullOrEmpty(patronymic) || patronymic.Length > MAX_PATRONYMIC_LENGTH)
-                return Result.Failure<User>($"Patronymic can not be empty or longer then 50 symbols");
+            if (!string.IsNullOrEmpty(patronymic) && patronymic.Length > MAX_PATRONYMIC_LENGTH)
+                throw new ArgumentException($"Patronymic can not longer then 50 symbols");
+
+            if (string.IsNullOrEmpty(login) || login.Length > MAX_LOGIN_LENGTH)
+                throw new ArgumentException($"Login can not be empty or longer then 15 symbols");
+
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentException($"Password can not be empty");
 
             var user = new User(id, surname, name, patronymic, dateOfBirth, email, phoneNumber, userRole, login, password);
 
-            return Result.Success(user);
+            return user;
         }
     }
 }

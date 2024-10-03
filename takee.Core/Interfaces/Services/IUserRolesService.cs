@@ -8,6 +8,7 @@ namespace takee.Core.Interfaces.Services
         Task DeleteUserRole(Guid id);
         Task<List<UserRole>> GetAllUserRoles();
         Task<UserRole> GetUserRoleById(Guid id);
+        Task<UserRole> GetUserRoleByName(string name);
         Task UpdateUserRole(Guid id, string name);
     }
 }

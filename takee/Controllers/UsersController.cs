@@ -1,5 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using takee.Application.Services;
 using takee.Contracts.Users;
 using takee.Core.Interfaces.Services;
 using takee.Core.Models;
@@ -62,27 +65,18 @@ namespace takee.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromBody] UsersRequest request)
         {
-            var email = Email.Create(request.Email).Value;
-            var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
-
             var userRole = await _userRolesService.GetUserRoleById(request.UserRoleId);
 
-            var user = Core.Models.User.Create(
-                Guid.NewGuid(),
+            await _usersService.CreateUser(
                 request.Surname,
                 request.Name,
                 request.Patronymic,
                 request.DateOfBirth,
-                email,
-                phoneNumber,
+                request.Email,
+                request.PhoneNumber,
                 userRole,
                 request.Login,
                 request.Password);
-
-            if (user.IsFailure)
-                return BadRequest(user.Error);
-
-            await _usersService.CreateUser(user.Value);
 
             return Ok();
         }
@@ -90,17 +84,14 @@ namespace takee.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult> UpdateUser(Guid id, [FromBody] UsersRequest request)
         {
-            var email = Email.Create(request.Email).Value;
-            var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
-
             await _usersService.UpdateUser(
                 id,
                 request.Surname,
                 request.Name,
                 request.Patronymic,
                 request.DateOfBirth,
-                email,
-                phoneNumber,
+                request.Email,
+                request.PhoneNumber,
                 request.UserRoleId,
                 request.Login,
                 request.Password);
@@ -114,6 +105,39 @@ namespace takee.Controllers
             await _usersService.DeleteUser(id);
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterUserRequest request)
+        {
+            var userRole = await _userRolesService.GetUserRoleByName("user");
+
+            await _usersService.Register(
+                request.Surname,
+                request.Name,
+                request.Patronymic,
+                request.DateOfBirth,
+                request.Email,
+                request.PhoneNumber,
+                userRole,
+                request.Login,
+                request.Password);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginUserRequest request)
+        {
+            var token = await _usersService.Login(request.Login, request.Password);
+
+            HttpContext.Response.Cookies.Append("secretCookie", token.Item1);
+
+            var loginResponse = new LoginResponse(token.Item1, token.Item2); 
+
+            return Ok(loginResponse);
         }
     }
 }
